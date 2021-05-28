@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({METHOD, CONSTRUCTOR, TYPE})
 public @interface Parameters {
+  public static final String NULL_VALUE = "null";
+
   /**
    * The list of variables used to fill the parameters of this method. These variables must be
    * defined in your testng.xml file. For example

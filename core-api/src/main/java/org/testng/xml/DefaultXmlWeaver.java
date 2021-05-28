@@ -15,6 +15,10 @@ import static org.testng.xml.XmlSuite.*;
  * an XML comment as the test name and suite name at the end of the corresponding tags.
  */
 class DefaultXmlWeaver implements IWeaveXml {
+  // TODO: move constants to XmlSuite?
+  /** The name of the TestNG DTD. */
+  private static final String TESTNG_DTD = "testng-1.0.dtd";
+  private static final String HTTPS_TESTNG_DTD_URL = "https://testng.org/" + TESTNG_DTD;
 
   private final String defaultComment;
 
@@ -30,7 +34,7 @@ class DefaultXmlWeaver implements IWeaveXml {
   public String asXml(XmlSuite xmlSuite) {
     XMLStringBuffer xsb = new XMLStringBuffer();
     xsb.setDefaultComment(defaultComment);
-    xsb.setDocType("suite SYSTEM \"" + Parser.HTTPS_TESTNG_DTD_URL + '\"');
+    xsb.setDocType("suite SYSTEM \"" + HTTPS_TESTNG_DTD_URL + '\"');
     Properties p = new Properties();
     p.setProperty("name", xmlSuite.getName());
     if (xmlSuite.getVerbose() != null) {

@@ -1,6 +1,5 @@
 package org.testng.xml;
 
-import org.testng.TestNG;
 import org.testng.TestNGException;
 import org.testng.collections.Lists;
 import org.testng.collections.Maps;
@@ -61,7 +60,7 @@ public class XmlTest implements Cloneable {
     m_index = index;
     // no two tests in the same suite should have the same name.
     // so, make the default test name unique
-    m_name = TestNG.DEFAULT_COMMAND_LINE_TEST_NAME + " " + UUID.randomUUID().toString();
+    m_name = "Default XmlTest name " + UUID.randomUUID();
   }
 
   // For YAML

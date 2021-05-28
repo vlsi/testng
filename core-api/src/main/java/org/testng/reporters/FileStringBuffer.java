@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.nio.file.Files;
 
 /**
  * A string buffer that flushes its content to a temporary file whenever the internal string buffer
@@ -131,7 +132,7 @@ public class FileStringBuffer implements IBuffer {
     if (m_file != null) {
       flushToFile();
       try {
-        result = Files.readFile(m_file);
+        result = new String(Files.readAllBytes(m_file.toPath()));
       } catch (IOException e) {
         LOGGER.error(e.getMessage(), e);
       }

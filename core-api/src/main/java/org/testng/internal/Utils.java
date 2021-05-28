@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.testng.ITestNGMethod;
 import org.testng.TestNGException;
-import org.testng.TestRunner;
 import org.testng.collections.Lists;
 import org.testng.log4testng.Logger;
 import org.testng.reporters.XMLStringBuffer;
@@ -50,9 +49,21 @@ public final class Utils {
     ESCAPES.put('&', "&amp;");
   }
 
+  // Moved from TestRunner
+  // TODO: replace with Logger?
+  private static int m_verbose = 1;
+
   /** Hide constructor for utility class. */
   private Utils() {
     // Hide constructor
+  }
+
+  public static int getVerbose() {
+    return m_verbose;
+  }
+
+  public static void setVerbose(int n) {
+    m_verbose = n;
   }
 
   public static void writeUtf8File(
@@ -138,7 +149,7 @@ public final class Utils {
       outputFile.createNewFile();
       writeFile(outputFile, sb, encoding);
     } catch (IOException e) {
-      if (TestRunner.getVerbose() > 1) {
+      if (getVerbose() > 1) {
         LOG.error(e.getMessage(), e);
       } else {
         log(FORMAT, 1, e.getMessage());
@@ -152,7 +163,7 @@ public final class Utils {
 
       Utils.log("", 3, "Creating " + outputFile.getAbsolutePath());
     } catch (IOException ex) {
-      if (TestRunner.getVerbose() > 1) {
+      if (getVerbose() > 1) {
         LOG.error("ERROR WHILE WRITING TO " + outputFile, ex);
       } else {
         log(FORMAT, 1, "Error while writing to " + outputFile + ": " + ex.getMessage());
@@ -203,7 +214,7 @@ public final class Utils {
 
   /**
    * Logs the the message to System.out if level is greater than or equal to
-   * TestRunner.getVerbose(). The message is logged as:
+   * getVerbose(). The message is logged as:
    *
    * <pre>
    *     "[cls] msg"
@@ -214,8 +225,8 @@ public final class Utils {
    * @param msg the message to log to System.out.
    */
   public static void log(String cls, int level, String msg) {
-    // Why this coupling on a static member of TestRunner.getVerbose()?
-    if (TestRunner.getVerbose() >= level) {
+    // Why this coupling on a static member of getVerbose()?
+    if (getVerbose() >= level) {
       if (cls.length() > 0) {
         LOG.info("[" + cls + "] " + msg);
       } else {
@@ -335,7 +346,7 @@ public final class Utils {
   }
 
   private static boolean isTooVerbose() {
-    return RuntimeBehavior.showTestNGStackFrames() || TestRunner.getVerbose() >= 2;
+    return RuntimeBehavior.showTestNGStackFrames() || getVerbose() >= 2;
   }
 
   private enum StackTraceType {

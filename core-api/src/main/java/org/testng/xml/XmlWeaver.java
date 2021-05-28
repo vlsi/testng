@@ -4,7 +4,6 @@ import org.testng.TestNGException;
 import org.testng.internal.ClassHelper;
 import org.testng.internal.objects.InstanceCreator;
 import org.testng.internal.RuntimeBehavior;
-import org.testng.internal.reflect.ReflectionRecipes;
 
 /** A Utility class that helps represent a {@link XmlSuite} and {@link XmlTest} as String. */
 final class XmlWeaver {
@@ -31,7 +30,7 @@ final class XmlWeaver {
       return instance;
     }
     Class<?> clazz = ClassHelper.forName(getClassName());
-    boolean isValid = ReflectionRecipes.isOrImplementsInterface(IWeaveXml.class, clazz);
+    boolean isValid = clazz != null && IWeaveXml.class.isAssignableFrom(clazz);
     if (!isValid) {
       String msg =
           "In order for "
@@ -83,7 +82,7 @@ final class XmlWeaver {
       return null;
     }
     Class<?> clazzName = ClassHelper.forName(clazz);
-    if (ReflectionRecipes.isOrExtends(IWeaveXml.class, clazzName)) {
+    if (clazzName != null && IWeaveXml.class.isAssignableFrom(clazzName)) {
       return InstanceCreator.newInstance((Class<IWeaveXml>) clazzName);
     }
     throw new IllegalArgumentException(clazz + " does not implement " + IWeaveXml.class.getName());

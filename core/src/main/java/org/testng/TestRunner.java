@@ -112,8 +112,6 @@ public class TestRunner
   // The XML method selector (groups/methods included/excluded in XML)
   private final XmlMethodSelector m_xmlMethodSelector = new XmlMethodSelector();
 
-  private static int m_verbose = 1;
-
   //
   // These next fields contain all the configuration methods found on this class.
   // At initialization time, they just contain all the various @Configuration methods
@@ -1114,11 +1112,12 @@ public class TestRunner
   }
 
   public static int getVerbose() {
-    return m_verbose;
+    return Utils.getVerbose();
   }
 
+  // TODO: instance method adjusts static configuration. Should it be removed?
   public void setVerbose(int n) {
-    m_verbose = n;
+    Utils.setVerbose(n);
   }
 
   // TODO: This method needs to be removed and we need to be leveraging addListener().

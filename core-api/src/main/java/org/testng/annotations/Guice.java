@@ -3,7 +3,6 @@ package org.testng.annotations;
 import static java.lang.annotation.ElementType.TYPE;
 
 import com.google.inject.Module;
-
 import org.testng.IModuleFactory;
 
 import java.lang.annotation.Documented;

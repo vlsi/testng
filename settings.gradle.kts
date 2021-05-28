@@ -17,6 +17,9 @@ gradleEnterprise {
     }
 }
 
+include("bom")
+include("api")
+include("core-api")
 include("core")
 
 enableFeaturePreview("VERSION_CATALOGS")

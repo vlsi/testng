@@ -21,12 +21,15 @@ public final class InstanceCreator {
 
   public static <T> T newInstance(Class<T> clazz) {
     try {
-      return clazz.newInstance();
+      return clazz.getDeclaredConstructor().newInstance();
     } catch (IllegalAccessException
         | InstantiationException
         | ExceptionInInitializerError
+        | NoSuchMethodException
         | SecurityException e) {
       throw new TestNGException(CANNOT_INSTANTIATE_CLASS + clazz.getName(), e);
+    } catch (InvocationTargetException e) {
+      throw new TestNGException(CANNOT_INSTANTIATE_CLASS + clazz.getName(), e.getCause());
     }
   }
 

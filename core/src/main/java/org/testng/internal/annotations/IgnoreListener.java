@@ -67,6 +67,7 @@ public class IgnoreListener implements IAnnotationTransformer {
     annotation.setDescription(ignoredDescription);
   }
 
+  @SuppressWarnings("deprecation")
   private static Ignore findAnnotation(Package testPackage) {
     if (testPackage == null) {
       return null;

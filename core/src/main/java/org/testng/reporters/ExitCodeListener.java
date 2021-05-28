@@ -9,6 +9,7 @@ import org.testng.internal.IResultListener2;
 public class ExitCodeListener implements IResultListener2 {
   private TestNG m_mainRunner;
 
+  @SuppressWarnings("deprecation")
   public ExitCodeListener() {
     this(TestNG.getDefault());
   }

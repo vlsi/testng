@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.testng.ITestObjectFactory;
-import org.testng.TestNG;
 import org.testng.collections.Lists;
 import org.testng.collections.Maps;
 import org.testng.internal.objects.InstanceCreator;

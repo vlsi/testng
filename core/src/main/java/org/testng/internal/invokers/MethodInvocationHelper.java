@@ -125,7 +125,7 @@ public class MethodInvocationHelper {
       }
     }
 
-    if (!Modifier.isPublic(thisMethod.getModifiers()) || !thisMethod.isAccessible()) {
+    if (!Modifier.isPublic(thisMethod.getModifiers()) || !canAccess(thisMethod)) {
       try {
         thisMethod.setAccessible(true);
       } catch (SecurityException e) {
@@ -134,6 +134,11 @@ public class MethodInvocationHelper {
     }
     cleanInterruptStatus();
     return thisMethod.invoke(instance, parameters);
+  }
+
+  @SuppressWarnings("deprecation")
+  private static boolean canAccess(Method thisMethod) {
+    return thisMethod.isAccessible();
   }
 
   @SuppressWarnings("unchecked")

@@ -54,10 +54,6 @@ public class JUnitTestRunner implements TestListener, IJUnitTestRunner {
     return m_methods;
   }
 
-  @Override
-  public void setTestResultNotifier(ITestResultNotifier notifier) {
-  }
-
   /** @see junit.framework.TestListener#startTest(junit.framework.Test) */
   @Override
   public void startTest(Test test) {

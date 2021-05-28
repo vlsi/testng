@@ -48,7 +48,8 @@ import org.testng.annotations.*;
  * Methods that bind parameters declared in testng.xml to actual values used to invoke methods.
  */
 public class Parameters {
-  public static final String NULL_VALUE = "null";
+  @Deprecated
+  public static final String NULL_VALUE = org.testng.annotations.Parameters.NULL_VALUE;
 
   private static final List<Class<? extends Annotation>> annotationList =
       Arrays.asList(
@@ -245,7 +246,7 @@ public class Parameters {
     }
     if (parameterNames.length == 0 && optionalValues.length > 0) {
       for (int i = 0; i < parameterTypes.length; i++) {
-        vResult.add(convertType(parameterTypes[i], optionalValues[i], ""));
+        vResult.add(PropertyUtils.convertType(parameterTypes[i], optionalValues[i], ""));
       }
       return vResult;
     }
@@ -271,7 +272,7 @@ public class Parameters {
                   + (xmlSuite.getFileName() != null ? "in " + xmlSuite.getFileName() : ""));
         }
       }
-      vResult.add(convertType(parameterTypes[i], value, p));
+      vResult.add(PropertyUtils.convertType(parameterTypes[i], value, p));
     }
     return vResult;
   }
@@ -484,56 +485,6 @@ public class Parameters {
     }
     builder.append(">");
     return builder.toString();
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T> T convertType(Class<T> type, String value, String paramName) {
-    try {
-      if (value == null || NULL_VALUE.equals(value.toLowerCase())) {
-        if (type.isPrimitive()) {
-          Utils.log(
-              "Parameters",
-              2,
-              "Attempt to pass null value to primitive type parameter '" + paramName + "'");
-        }
-
-        return null; // null value must be used
-      }
-
-      if (type == String.class) {
-        return (T) value;
-      }
-      if (type == int.class || type == Integer.class) {
-        return (T) Integer.valueOf(value);
-      }
-      if (type == boolean.class || type == Boolean.class) {
-        return (T) Boolean.valueOf(value);
-      }
-      if (type == byte.class || type == Byte.class) {
-        return (T) Byte.valueOf(value);
-      }
-      if (type == char.class || type == Character.class) {
-        return (T) Character.valueOf(value.charAt(0));
-      }
-      if (type == double.class || type == Double.class) {
-        return (T) Double.valueOf(value);
-      }
-      if (type == float.class || type == Float.class) {
-        return (T) Float.valueOf(value);
-      }
-      if (type == long.class || type == Long.class) {
-        return (T) Long.valueOf(value);
-      }
-      if (type == short.class || type == Short.class) {
-        return (T) Short.valueOf(value);
-      }
-      if (type.isEnum()) {
-        return (T) Enum.valueOf((Class<Enum>) type, value);
-      }
-    } catch (Exception e) {
-      throw new TestNGException("Conversion issue on parameter: " + paramName, e);
-    }
-    throw new TestNGException("Unsupported type parameter : " + type);
   }
 
   private static IDataProviderMethod findDataProvider(
