@@ -75,6 +75,11 @@ val testngAllJar by tasks.registering(ShadowJar::class) {
     archiveClassifier.set("all")
 }
 
+dependencies {
+    // Use shaded jar for testing
+    testImplementation(files(testngAllJar))
+}
+
 //<editor-fold desc="Use testng-all.jar for publication instead of testng.jar">
 configurations.all {
     if (name.endsWith("piElements") || name.endsWith("untimeElements")) {
