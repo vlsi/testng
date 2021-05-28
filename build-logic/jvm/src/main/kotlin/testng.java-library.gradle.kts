@@ -42,7 +42,7 @@ tasks.withType<Jar>().configureEach {
             "Implementation-Version" to project.version,
             "Implementation-Vendor" to vendor,
             "Implementation-Vendor-Id" to "org.testng",
-            "Implementation-Url" to findProperty("project.url"),
+            "Implementation-Url" to rootProject.findProperty("project.url"),
         ))
     }
 }

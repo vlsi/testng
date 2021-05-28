@@ -28,7 +28,7 @@ publishing {
             pom {
                 name.set(artifactId)
                 description.set(providers.gradleProperty("description"))
-                val projectUrl = providers.gradleProperty("project.url")
+                val projectUrl = rootProject.providers.gradleProperty("project.url")
                 url.set(projectUrl)
                 licenses {
                     license {
