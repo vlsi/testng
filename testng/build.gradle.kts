@@ -32,16 +32,41 @@ val testngJars by configurations.creating {
 }
 //</editor-fold>
 
+java {
+    registerFeature("ant") {
+        usingSourceSet(sourceSets["main"])
+    }
+
+    registerFeature("guice") {
+        usingSourceSet(sourceSets["main"])
+    }
+
+    registerFeature("junit") {
+        usingSourceSet(sourceSets["main"])
+    }
+
+    registerFeature("yaml") {
+        usingSourceSet(sourceSets["main"])
+    }
+}
+
 dependencies {
     // Note: it is enough to mention key projects here, and testng transitives
     // would be selected automatically
     shadedDependencyElements(platform(projects.testngApi))
+    shadedDependencyElements(projects.testngAnt)
     shadedDependencyElements(projects.testngCore)
 
     // Note: it is important to list all third-party dependencies manually
     // Automatic inference by Gradle does not seem to be trivial :(
     api("com.google.code.findbugs:jsr305:_")
     api("com.beust:jcommander:_")
+    "antApi"("org.apache.ant:ant:_")
+    "guiceApi"(platform("com.google.inject:guice-bom:_"))
+    "guiceApi"("com.google.inject:guice::no_aop")
+    "junitApi"("junit:junit:_")
+    "yamlApi"("org.yaml:snakeyaml:_")
+
     implementation("org.webjars:jquery:_")
 }
 
@@ -51,17 +76,14 @@ val testngAllJar by tasks.registering(ShadowJar::class) {
 }
 
 //<editor-fold desc="Use testng-all.jar for publication instead of testng.jar">
-configurations.apiElements.get().outgoing {
-    artifacts.clear()
-    artifact(testngAllJar) {
-        classifier = null
+configurations.all {
+    if (name.endsWith("piElements") || name.endsWith("untimeElements")) {
+        artifacts.clear()
     }
-}
-
-configurations.runtimeElements.get().outgoing {
-    artifacts.clear()
-    artifact(testngAllJar) {
-        classifier = null
+    if (name == "apiElements" || name == "runtimeElements") {
+        outgoing.artifact(testngAllJar) {
+            classifier = null
+        }
     }
 }
 //</editor-fold>
