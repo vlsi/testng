@@ -6,5 +6,6 @@ plugins {
 javaPlatform.allowDependencies()
 
 dependencies {
+    api(projects.asserts)
     api(projects.coreApi)
 }

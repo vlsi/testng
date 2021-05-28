@@ -17,11 +17,14 @@ gradleEnterprise {
     }
 }
 
-include("bom")
-include("api")
-include("ant")
-include("core-api")
-include("core")
+include(":bom")
+include(":api")
+include(":asserts")
+include(":ant")
+include(":collections")
+include(":core-api")
+include(":core")
+include(":test-kit")
 
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

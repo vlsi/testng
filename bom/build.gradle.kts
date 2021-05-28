@@ -7,6 +7,8 @@ dependencies {
     constraints {
         api(projects.ant)
         api(projects.api)
+        api(projects.asserts)
+        api(projects.collections)
         api(projects.coreApi)
         api(projects.core)
     }

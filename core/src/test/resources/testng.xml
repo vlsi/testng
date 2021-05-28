@@ -760,14 +760,6 @@
     </classes>
   </test>
 
-  <test name="Asserts">
-    <classes>
-      <class name="org.testng.AssertTest" />
-      <class name="test.asserttests.AssertTest" />
-      <class name="test.asserttests.ArrayEqualityAssertTest" />
-    </classes>
-  </test>
-
   <test name="Utils">
     <classes>
       <class name="org.testng.internal.UtilsTest" />
@@ -884,13 +876,6 @@
 
   <test name="Issue 107">
     <classes>
-    </classes>
-  </test>
-
-  <test name="Assertion">
-    <classes>
-      <class name="test.assertion.AssertionTest"/>
-      <class name="test.assertion.SoftAssertTest"/>
     </classes>
   </test>
 

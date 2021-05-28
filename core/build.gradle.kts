@@ -47,11 +47,13 @@ dependencies {
     api("com.beust:jcommander:_")
     api("org.webjars:jquery:_")
 
+    implementation(projects.collections)
     "guiceApi"(platform("com.google.inject:guice-bom:_"))
     "guiceApi"("com.google.inject:guice::no_aop")
     "junitApi"("junit:junit:_")
     "yamlApi"("org.yaml:snakeyaml:_")
 
+    testImplementation(projects.asserts)
     testImplementation("org.codehaus.groovy:groovy-all:_")
     testImplementation("org.spockframework:spock-core:_")
     testImplementation("org.apache-extras.beanshell:bsh:_")
