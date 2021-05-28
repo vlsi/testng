@@ -2,7 +2,7 @@ pluginManagement {
     includeBuild("build-logic")
 }
 
-rootProject.name = "testng"
+rootProject.name = "testng-root"
 
 plugins {
     id("com.gradle.enterprise") version "3.6.1"
@@ -17,6 +17,7 @@ gradleEnterprise {
     }
 }
 
+include(":testng")
 include(":testng-bom")
 include(":testng-api")
 include(":testng-asserts")
