@@ -1,3 +1,6 @@
+import com.github.vlsi.gradle.publishing.dsl.simplifyXml
+import com.github.vlsi.gradle.publishing.dsl.versionFromResolution
+
 plugins {
     id("testng.reproducible-builds")
     id("testng.java-library")
@@ -21,10 +24,17 @@ publishing {
     publications {
         create<MavenPublication>("custom") {
             from(components["java"])
-//            groupId = project.group.toString()
-//            artifactId = This.artifactId
-//            version = project.version.toString()
-//            suppressAllPomMetadataWarnings()
+            // Gradle feature variants can't be mapped to Maven's pom
+            suppressAllPomMetadataWarnings()
+
+            // Use the resolved versions in pom.xml
+            // Gradle might have different resolution rules, so we set the versions
+            // that were used in Gradle build/test.
+            versionFromResolution()
+
+            pom {
+                simplifyXml()
+            }
         }
     }
 }
