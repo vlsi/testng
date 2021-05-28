@@ -688,11 +688,10 @@
     </classes>
   </test>
 
-  <!-- TestNG ant task related tests -->
-  <test name="Ant" >
+  <!-- TestNG command line related tests -->
+  <test name="CommandLineArgs" >
     <classes>
         <class name="test.ant.TestCommandLineArgs" />
-        <class name="test.ant.AntTest"/>
     </classes>
   </test>
 
@@ -846,7 +845,7 @@
       <class name="test.sanitycheck.CheckSuiteNamesTest" />
     </classes>
   </test>
-  
+
   <test name="TestNames">
     <classes>
       <class name="org.testng.xml.internal.TestNamesMatcherTest"/>

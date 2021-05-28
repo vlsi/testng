@@ -27,10 +27,6 @@ java {
     // use gradle feature
     // in order to optionally exposed transitive dependency
 
-    registerFeature("ant") {
-        usingSourceSet(sourceSets["main"])
-    }
-
     registerFeature("guice") {
         usingSourceSet(sourceSets["main"])
     }
@@ -51,14 +47,11 @@ dependencies {
     api("com.beust:jcommander:_")
     api("org.webjars:jquery:_")
 
-    "antApi"("org.apache.ant:ant:_")
     "guiceApi"(platform("com.google.inject:guice-bom:_"))
     "guiceApi"("com.google.inject:guice::no_aop")
     "junitApi"("junit:junit:_")
     "yamlApi"("org.yaml:snakeyaml:_")
 
-    testImplementation("org.apache.ant:ant-testutil:_")
-    testImplementation("org.assertj:assertj-core:_")
     testImplementation("org.codehaus.groovy:groovy-all:_")
     testImplementation("org.spockframework:spock-core:_")
     testImplementation("org.apache-extras.beanshell:bsh:_")
@@ -99,16 +92,12 @@ tasks.jar {
 }
 
 tasks.test {
-    useTestNG {
+    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
+    (testFramework.options as TestNGOptions).apply {
         suites("src/test/resources/testng.xml")
         listeners.add("org.testng.reporters.FailedInformationOnConsoleReporter")
-        testLogging.showStandardStreams = true
         maxHeapSize = "1500m"
     }
-}
-
-tasks.withType<Test>().configureEach {
-    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
 }
 
 //

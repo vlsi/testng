@@ -19,6 +19,7 @@ gradleEnterprise {
 
 include("bom")
 include("api")
+include("ant")
 include("core-api")
 include("core")
 
