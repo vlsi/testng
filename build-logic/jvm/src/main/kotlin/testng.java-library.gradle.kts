@@ -35,17 +35,14 @@ tasks.withType<Jar>().configureEach {
         val name = "TestNG"
         val vendor = name
         attributes(mapOf(
-            "Implementation-Vendor" to name,
-            "Implementation-Vendor-Id" to provider { project.group },
-            "Implementation-version" to provider { project.version },
             "Specification-Title" to name,
             "Specification-Version" to project.version,
             "Specification-Vendor" to vendor,
             "Implementation-Title" to name,
             "Implementation-Version" to project.version,
             "Implementation-Vendor" to vendor,
-            "Implementation-Vendor-Id" to provider { project.group },
-            "Implementation-Url" to providers.gradleProperty("project.url"),
+            "Implementation-Vendor-Id" to "org.testng",
+            "Implementation-Url" to findProperty("project.url"),
         ))
     }
 }
