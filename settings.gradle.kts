@@ -1,7 +1,12 @@
+pluginManagement {
+    includeBuild("build-logic")
+}
+
 rootProject.name = "testng"
 
 plugins {
-    id("com.gradle.enterprise").version("3.1.1")
+    id("com.gradle.enterprise") version "3.6.1"
+    id("de.fayard.refreshVersions") version "0.10.0"
 }
 
 gradleEnterprise {
@@ -13,3 +18,6 @@ gradleEnterprise {
 }
 
 include("core")
+
+enableFeaturePreview("VERSION_CATALOGS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
