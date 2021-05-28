@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.collections) {
+    implementation(projects.testngCollections) {
         because("Lists.newArrayList")
     }
 

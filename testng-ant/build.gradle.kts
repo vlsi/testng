@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    api(project(":core"))
     api("org.apache.ant:ant:_")
 
-    testImplementation(projects.asserts)
+    implementation(projects.testngCore)
+    testImplementation(projects.testngAsserts)
     testImplementation("org.apache.ant:ant-testutil:_")
 }

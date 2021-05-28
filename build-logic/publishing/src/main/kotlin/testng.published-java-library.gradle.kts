@@ -12,9 +12,9 @@ java {
 dependencies {
     // If the user adds core and api with different versions,
     // then Gradle would select **both** core and api with the same version
-    implementation(platform(project(":bom")))
+    implementation(platform(project(":testng-bom")))
     // For some reason this can't be in code-quality/testng.testing :(
-    testImplementation(project(":test-kit"))
+    testImplementation(project(":testng-test-kit"))
 }
 
 publishing {

@@ -6,6 +6,6 @@ plugins {
 javaPlatform.allowDependencies()
 
 dependencies {
-    api(projects.asserts)
-    api(projects.coreApi)
+    api(projects.testngAsserts)
+    api(projects.testngCoreApi)
 }

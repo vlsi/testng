@@ -17,14 +17,14 @@ gradleEnterprise {
     }
 }
 
-include(":bom")
-include(":api")
-include(":asserts")
-include(":ant")
-include(":collections")
-include(":core-api")
-include(":core")
-include(":test-kit")
+include(":testng-bom")
+include(":testng-api")
+include(":testng-asserts")
+include(":testng-ant")
+include(":testng-collections")
+include(":testng-core-api")
+include(":testng-core")
+include(":testng-test-kit")
 
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
