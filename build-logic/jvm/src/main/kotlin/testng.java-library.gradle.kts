@@ -46,3 +46,21 @@ tasks.withType<Jar>().configureEach {
         ))
     }
 }
+
+@Suppress("unused")
+val transitiveSourcesElements by configurations.creating {
+    description = "Share sources folder with other projects for aggregation (e.g. sources, javadocs, etc)"
+    isVisible = false
+    isCanBeResolved = false
+    isCanBeConsumed = true
+    extendsFrom(configurations.implementation.get())
+    attributes {
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+        attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.DOCUMENTATION))
+        attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named("source-folders"))
+    }
+    // afterEvaluate is to allow creation of the new source sets
+    afterEvaluate {
+        sourceSets.main.get().java.srcDirs.forEach { outgoing.artifact(it) }
+    }
+}
