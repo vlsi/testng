@@ -53,6 +53,7 @@ dependencies {
 
     implementation(projects.testngCollections)
     implementation(projects.testngReflectionUtils)
+    implementation(projects.testngRunnerApi)
     implementation("org.webjars:jquery:_")
 
     testImplementation(projects.testngAsserts)
