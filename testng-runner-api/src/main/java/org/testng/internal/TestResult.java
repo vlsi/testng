@@ -11,7 +11,6 @@ import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.TestNGException;
-import org.testng.TestRunner;
 import org.testng.collections.Lists;
 import org.testng.collections.Objects;
 
@@ -115,7 +114,7 @@ public class TestResult implements ITestResult {
         return;
       }
       m_name = m_method.getMethodName();
-      if (TestRunner.getVerbose() > 1) {
+      if (Utils.getVerbose() > 1) {
         String msg = String.format(
             "Warning: [%s] implementation on class [%s] returned null. Defaulting to method name",
             ITest.class.getName(), instance.getClass().getName());

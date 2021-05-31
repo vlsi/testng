@@ -48,10 +48,11 @@ dependencies {
 
     "guiceApi"(platform("com.google.inject:guice-bom:_"))
     "guiceApi"("com.google.inject:guice::no_aop")
-    "junitApi"("junit:junit:_")
-    "yamlApi"("org.yaml:snakeyaml:_")
+    "junitImplementation"(projects.testngRunnerJunit4)
+    "yamlImplementation"("org.yaml:snakeyaml:_")
 
     implementation(projects.testngCollections)
+    implementation(projects.testngReflectionUtils)
     implementation("org.webjars:jquery:_")
 
     testImplementation(projects.testngAsserts)

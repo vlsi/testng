@@ -13,4 +13,6 @@ dependencies {
     api("com.google.code.findbugs:jsr305:_")
     "guiceApi"(platform("com.google.inject:guice-bom:_"))
     "guiceApi"("com.google.inject:guice::no_aop")
+
+    implementation(projects.testngReflectionUtils)
 }
