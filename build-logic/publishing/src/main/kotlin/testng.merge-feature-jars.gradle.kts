@@ -17,7 +17,55 @@ val shadedDependencyElements by configurations.creating {
     description = "Declares which modules to aggregate into ...-all.jar"
     isCanBeConsumed = false
     isCanBeResolved = false
+}
+
+val shadedDependencyFullRuntimeClasspath by configurations.creating {
+    description = "Resolves the list of shadedDependencyElements to testng and external dependencies"
+    isCanBeConsumed = false
+    isCanBeResolved = true
     isVisible = false
+    extendsFrom(shadedDependencyElements)
+    attributes {
+        attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
+        attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
+    }
+}
+
+val jarsToMerge by configurations.creating {
+    description = "Resolves the list of testng modules to include into -all jar"
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    isTransitive = false
+    attributes {
+        attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
+        attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
+    }
+    withDependencies {
+        // Clear any user-added-by-mistake dependencies
+        clear()
+        // Identifies TestNG projects in shadedDependencyFullRuntimeClasspath dependency tree
+        addAll(
+            shadedDependencyFullRuntimeClasspath.incoming.resolutionResult.allDependencies
+                .asSequence()
+                .filter { !it.isConstraint }
+                .filterIsInstance<ResolvedDependencyResult>()
+                .mapNotNull { resolved ->
+                    val id = resolved.selected.id as? ProjectComponentIdentifier ?: return@mapNotNull null
+
+                    val category = resolved.resolvedVariant.attributes.run {
+                        keySet().firstOrNull { it.name == Category.CATEGORY_ATTRIBUTE.name }?.let { getAttribute(it) }
+                    }
+
+                    project.dependencies.create(project(id.projectPath)).let {
+                        when (category) {
+                            Category.REGULAR_PLATFORM -> project.dependencies.platform(it)
+                            Category.LIBRARY -> it
+                            else -> throw IllegalStateException("Unexpected dependency type $category for id $id")
+                        }
+                    }
+                }
+        )
+    }
 }
 
 val shadedDependencyJavadocClasspath by configurations.creating {
@@ -25,36 +73,13 @@ val shadedDependencyJavadocClasspath by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
     isVisible = false
-    extendsFrom(shadedDependencyElements)
+    extendsFrom(jarsToMerge)
     extendsFrom(configurations["compileClasspath"])
     attributes {
         attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
         attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
         attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, LibraryElements.JAR)
         attribute(Bundling.BUNDLING_ATTRIBUTE, Bundling.EXTERNAL)
-    }
-}
-
-fun Configuration.keepOnlyTestNgModules() {
-    resolutionStrategy.dependencySubstitution.all {
-        // prune third-party dependencies, so testng-all.jar contains only testng classes
-        if (requested !is ProjectComponentSelector) {
-            // It is not clear how to remove dependency, however,
-            // replacing everything with collections seems to be harmless
-            useTarget(project(":testng-collections"))
-        }
-    }
-}
-
-val jarsToMerge by configurations.creating {
-    description = "Resolves the list of dependencies to include into -all jar"
-    isCanBeConsumed = false
-    isCanBeResolved = true
-    extendsFrom(shadedDependencyElements)
-    keepOnlyTestNgModules()
-    attributes {
-        attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
-        attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_API)
     }
 }
 
@@ -69,7 +94,8 @@ val sourcesToMerge by configurations.creating {
     description = "Resolves the list of source directories to include into sources-all jar"
     isCanBeConsumed = false
     isCanBeResolved = true
-    extendsFrom(shadedDependencyElements)
+    isTransitive = false // jarsToMerge is a full set of modules, so no need to have transitivity here
+    extendsFrom(jarsToMerge)
     attributes {
         attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
         attribute(Category.CATEGORY_ATTRIBUTE, Category.DOCUMENTATION)

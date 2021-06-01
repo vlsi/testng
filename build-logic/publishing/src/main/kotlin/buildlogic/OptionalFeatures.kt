@@ -38,6 +38,12 @@ open class OptionalFeatures(private val project: Project) {
         OptionalFeatureBuilder(name, project.dependencies).builder()
         _features += name
 
+        // This is to include all testng modules (even optional) to -all.jar
+        project.configurations.named("shadedDependencyFullRuntimeClasspath") {
+            extendsFrom(project.configurations["${name}Api"])
+            extendsFrom(project.configurations["${name}Implementation"])
+        }
+
         // By default Gradle adds the jar as artifact, however, we won't need it
         // We'll put merged jar later as a main artifact
         project.configurations {
