@@ -1,5 +1,5 @@
 plugins {
-    id("testng.published-java-platform")
+    id("testng.java-platform")
 }
 
 // Add a convenience pom.xml that sets all the versions
