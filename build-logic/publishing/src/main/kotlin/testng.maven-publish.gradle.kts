@@ -1,28 +1,12 @@
 plugins {
     `maven-publish`
+    id("testng.local-maven-repo")
     id("testng.signing")
 }
 
-object This {
-    const val version = "7.5.0-SNAPSHOT"
-    const val artifactId = "testng"
-    const val groupId = "org.testng"
-    const val description = "Testing framework for Java"
-    const val url = "https://testng.org"
-    const val scm = "github.com/cbeust/testng"
-
-    // Should not need to change anything below
-    const val name = "TestNG"
-    const val vendor = name
-}
+val scm = "github.com/cbeust/testng"
 
 publishing {
-    repositories {
-        maven {
-            name = "myRepo"
-            url = uri("file://$buildDir/repo")
-        }
-    }
     publications {
         withType<MavenPublication>().configureEach {
             pom {
@@ -38,7 +22,7 @@ publishing {
                 }
                 issueManagement {
                     system.set("Github")
-                    url.set("https://${This.scm}/issues")
+                    url.set("https://$scm/issues")
                 }
                 developers {
                     developer {
@@ -58,8 +42,8 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://${This.scm}.git")
-                    url.set("https://${This.scm}")
+                    connection.set("scm:git:git://$scm.git")
+                    url.set("https://$scm")
                 }
             }
         }
