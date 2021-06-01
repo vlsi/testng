@@ -28,7 +28,7 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<Jar>().configureEach {
     into("META-INF") {
         filterEolSimple("crlf")
-        from("$rootDir/LICENSE")
+        from("$rootDir/LICENSE.txt")
         from("$rootDir/NOTICE")
     }
     manifest {
