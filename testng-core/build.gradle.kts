@@ -4,19 +4,6 @@ plugins {
     id("testng.sonarqube")
 }
 
-// TODO: remove
-object This {
-    const val artifactId = "testng"
-    const val groupId = "org.testng"
-    const val description = "Testing framework for Java"
-    const val url = "https://testng.org"
-    const val scm = "github.com/cbeust/testng"
-
-    // Should not need to change anything below
-    const val name = "TestNG"
-    const val vendor = name
-}
-
 java {
     // use gradle feature
     // in order to optionally exposed transitive dependency
@@ -58,36 +45,6 @@ dependencies {
     testImplementation("org.jboss.shrinkwrap:shrinkwrap-api:_")
     testImplementation("org.jboss.shrinkwrap:shrinkwrap-impl-base:_")
     testImplementation("org.xmlunit:xmlunit-assertj:_")
-}
-
-tasks.jar {
-    manifest {
-        attributes(
-            // Java 9 module name
-            "Automatic-Module-Name" to project.group,
-
-            // BND Plugin instructions (for OSGi)
-            "Bundle-Name" to This.name,
-            "Bundle-SymbolicName" to project.group,
-            "Bundle-Vendor" to This.vendor,
-            "Bundle-License" to "https://apache.org/licenses/LICENSE-2.0",
-            "Bundle-Description" to This.description,
-            "Bundle-Version" to project.version,
-            "Import-Package" to """
-                "bsh.*;version="[2.0.0,3.0.0)";resolution:=optional",
-                "com.beust.jcommander.*;version="[1.7.0,3.0.0)";resolution:=optional",
-                "com.google.inject.*;version="[1.2,1.3)";resolution:=optional",
-                "junit.framework;version="[3.8.1, 5.0.0)";resolution:=optional",
-                "org.junit.*;resolution:=optional",
-                "org.apache.tools.ant.*;version="[1.7.0, 2.0.0)";resolution:=optional",
-                "org.yaml.*;version="[1.6,2.0)";resolution:=optional",
-                "!com.beust.testng",
-                "!org.testng.*",
-                "!com.sun.*",
-                "*"
-            """
-        )
-    }
 }
 
 tasks.test {

@@ -36,3 +36,33 @@ dependencies {
     // Use shaded jar for testing
     testImplementation(files(tasks.mergedJar))
 }
+
+tasks.mergedJar {
+    manifest {
+        attributes(
+            // Java 9 module name
+            "Automatic-Module-Name" to project.group,
+
+            // BND Plugin instructions (for OSGi)
+            "Bundle-Name" to "TestNG",
+            "Bundle-SymbolicName" to project.group,
+            "Bundle-Vendor" to "TestNG",
+            "Bundle-License" to "https://apache.org/licenses/LICENSE-2.0",
+            "Bundle-Description" to "Testing framework for Java",
+            "Bundle-Version" to project.version,
+            "Import-Package" to """
+                bsh.*;version="[2.0.0,3.0.0)";resolution:=optional,
+                com.beust.jcommander.*;version="[1.7.0,3.0.0)";resolution:=optional,
+                com.google.inject.*;version="[1.2,1.3)";resolution:=optional,
+                junit.framework;version="[3.8.1, 5.0.0)";resolution:=optional,
+                org.junit.*;resolution:=optional,
+                org.apache.tools.ant.*;version="[1.7.0, 2.0.0)";resolution:=optional,
+                org.yaml.*;version="[1.6,2.0)";resolution:=optional,
+                !com.beust.testng,
+                !org.testng.*,
+                !com.sun.*,
+                *;resolution:=optional
+            """.trimIndent().replace("\n", "")
+        )
+    }
+}
