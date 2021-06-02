@@ -1,19 +1,20 @@
 plugins {
     `maven-publish`
     id("testng.local-maven-repo")
-    id("testng.signing")
+//    id("testng.signing")
 }
 
-val scm = "github.com/cbeust/testng"
+// It takes value from root project always: https://github.com/gradle/gradle/issues/13302
+val scmUrl = providers.gradleProperty("scm.url")
 
 publishing {
     publications {
         withType<MavenPublication>().configureEach {
             pom {
                 name.set(artifactId)
-                description.set(providers.gradleProperty("description"))
-                val projectUrl = rootProject.providers.gradleProperty("project.url")
-                url.set(projectUrl)
+                description.set(providers.provider { project.description })
+                // It takes value from root project always: https://github.com/gradle/gradle/issues/13302
+                url.set(providers.gradleProperty("project.url"))
                 licenses {
                     license {
                         name.set("Apache License, Version 2.0")
@@ -22,7 +23,7 @@ publishing {
                 }
                 issueManagement {
                     system.set("Github")
-                    url.set("https://$scm/issues")
+                    url.set(scmUrl.map { "https://$it/issues" })
                 }
                 developers {
                     developer {
@@ -42,8 +43,8 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://$scm.git")
-                    url.set("https://$scm")
+                    connection.set(scmUrl.map { "scm:git:$it" })
+                    url.set(scmUrl)
                 }
             }
         }

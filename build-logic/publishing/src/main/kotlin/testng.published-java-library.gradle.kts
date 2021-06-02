@@ -23,7 +23,7 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("custom") {
+        create<MavenPublication>("maven") {
             from(components["java"])
             // Gradle feature variants can't be mapped to Maven's pom
             suppressAllPomMetadataWarnings()

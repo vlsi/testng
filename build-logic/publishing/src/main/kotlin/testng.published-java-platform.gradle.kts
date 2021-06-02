@@ -6,7 +6,7 @@ plugins {
 
 publishing {
     publications {
-        create<MavenPublication>("custom") {
+        create<MavenPublication>("maven") {
             from(components["javaPlatform"])
         }
     }
