@@ -1,4 +1,7 @@
-import buildlogic.OptionalFeatures
+import buildlogic.OptionalFeaturesExtension
+import buildlogic.firstLayerDependencies
+import buildlogic.javaLibrary
+import buildlogic.reconstruct
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
@@ -7,8 +10,8 @@ plugins {
     id("testng.published-java-library")
 }
 
-(the<JavaPluginExtension>() as ExtensionAware).extensions
-    .create<OptionalFeatures>("optionalFeatures", project)
+val optionalFeatures = (the<JavaPluginExtension>() as ExtensionAware).extensions
+    .create<OptionalFeaturesExtension>("optionalFeatures", project)
 
 inline fun <reified T : Named> AttributeContainer.attribute(attr: Attribute<T>, value: String) =
     attribute(attr, objects.named(value))
@@ -19,27 +22,37 @@ val shadedDependencyElements by configurations.creating {
     isCanBeResolved = false
 }
 
+fun Configuration.javaLibraryRuntime() = javaLibrary(objects, Usage.JAVA_RUNTIME)
+
+configurations["api"].extendsFrom(
+    firstLayerDependencies(
+        Usage.JAVA_API,
+        shadedDependencyElements
+    )
+)
+
+configurations["implementation"].extendsFrom(
+    firstLayerDependencies(
+        Usage.JAVA_RUNTIME,
+        shadedDependencyElements
+    )
+)
+
 val shadedDependencyFullRuntimeClasspath by configurations.creating {
     description = "Resolves the list of shadedDependencyElements to testng and external dependencies"
     isCanBeConsumed = false
     isCanBeResolved = true
     isVisible = false
     extendsFrom(shadedDependencyElements)
-    attributes {
-        attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
-        attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
-    }
+    javaLibraryRuntime()
 }
 
-val jarsToMerge by configurations.creating {
+val mergedJars by configurations.creating {
     description = "Resolves the list of testng modules to include into -all jar"
     isCanBeConsumed = false
     isCanBeResolved = true
     isTransitive = false
-    attributes {
-        attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
-        attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
-    }
+    javaLibraryRuntime()
     withDependencies {
         // Clear any user-added-by-mistake dependencies
         clear()
@@ -50,22 +63,16 @@ val jarsToMerge by configurations.creating {
                 .filter { !it.isConstraint }
                 .filterIsInstance<ResolvedDependencyResult>()
                 .mapNotNull { resolved ->
-                    val id = resolved.selected.id as? ProjectComponentIdentifier ?: return@mapNotNull null
-
-                    val category = resolved.resolvedVariant.attributes.run {
-                        keySet().firstOrNull { it.name == Category.CATEGORY_ATTRIBUTE.name }?.let { getAttribute(it) }
-                    }
-
-                    project.dependencies.create(project(id.projectPath)).let {
-                        when (category) {
-                            Category.REGULAR_PLATFORM -> project.dependencies.platform(it)
-                            Category.LIBRARY -> it
-                            else -> throw IllegalStateException("Unexpected dependency type $category for id $id")
-                        }
-                    }
+                    resolved.resolvedVariant
+                        .takeIf { optionalFeatures.shadedDependenciesFilter.get()(it) }
+                        ?.let { project.dependencies.reconstruct(it) }
                 }
         )
     }
+}
+
+dependencies {
+    implementation(files(mergedJars))
 }
 
 val shadedDependencyJavadocClasspath by configurations.creating {
@@ -73,11 +80,11 @@ val shadedDependencyJavadocClasspath by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
     isVisible = false
-    extendsFrom(jarsToMerge)
+    extendsFrom(mergedJars)
     extendsFrom(configurations["compileClasspath"])
+    extendsFrom(shadedDependencyFullRuntimeClasspath)
+    javaLibraryRuntime()
     attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
-        attribute(Category.CATEGORY_ATTRIBUTE, Category.LIBRARY)
         attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, LibraryElements.JAR)
         attribute(Bundling.BUNDLING_ATTRIBUTE, Bundling.EXTERNAL)
     }
@@ -86,7 +93,7 @@ val shadedDependencyJavadocClasspath by configurations.creating {
 val mergedJar by tasks.registering(ShadowJar::class) {
     group = LifecycleBasePlugin.BUILD_GROUP
     description = "Builds all-project jar (third-party dependencies are left as is)"
-    configurations = listOf(jarsToMerge)
+    configurations = listOf(mergedJars)
     archiveClassifier.set("all")
 }
 
@@ -95,7 +102,7 @@ val sourcesToMerge by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
     isTransitive = false // jarsToMerge is a full set of modules, so no need to have transitivity here
-    extendsFrom(jarsToMerge)
+    extendsFrom(mergedJars)
     attributes {
         attribute(Usage.USAGE_ATTRIBUTE, Usage.JAVA_RUNTIME)
         attribute(Category.CATEGORY_ATTRIBUTE, Category.DOCUMENTATION)
