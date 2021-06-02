@@ -3,13 +3,17 @@ plugins {
     id("testng.merge-feature-jars")
 }
 
-description = "Jar with all TestNG classes"
+description = "Testing framework for Java"
 
 java {
     // The features would be merged into testng.jar as follows:
     // org.testng dependencies would be included to the jar
     // third-party dependencies would be left as regular dependencies
     optionalFeatures {
+        shadedDependenciesFilter.set {
+            it.owner.let { id -> id is ProjectComponentIdentifier && id.build.isCurrentBuild }
+        }
+
         create("ant") {
             api(projects.testngAnt)
         }
@@ -29,12 +33,8 @@ java {
 dependencies {
     // Note: it is enough to mention key projects here, and testng transitives
     // would be selected automatically
+    shadedDependencyElements(projects.testngAsserts)
     shadedDependencyElements(projects.testngCore)
-}
-
-dependencies {
-    // Use shaded jar for testing
-    testImplementation(files(tasks.mergedJar))
 }
 
 tasks.mergedJar {
@@ -48,7 +48,7 @@ tasks.mergedJar {
             "Bundle-SymbolicName" to project.group,
             "Bundle-Vendor" to "TestNG",
             "Bundle-License" to "https://apache.org/licenses/LICENSE-2.0",
-            "Bundle-Description" to "Testing framework for Java",
+            "Bundle-Description" to project.description,
             "Bundle-Version" to project.version,
             "Import-Package" to """
                 bsh.*;version="[2.0.0,3.0.0)";resolution:=optional,

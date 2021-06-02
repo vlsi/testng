@@ -1,4 +1,5 @@
 plugins {
+    // Note: un-comment a dependency in testng.published-java-library when testng-bom becomes published
     id("testng.java-platform")
 }
 
